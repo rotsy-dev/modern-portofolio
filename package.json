@@ -1,0 +1,66 @@
+{
+  "name": "rotsy-porto-dev",
+  "version": "1.0.0",
+  "private": true,
+  "author": {
+    "name": "Rotsy Maminintsoa",
+    "email": "rotsyni@gmail.com",
+    "url": "https://github.com/rotsy-dev"
+  },
+  "description": "Rotsy Maminintsoa is a Full-stack web developer (Symfony/PHP, Flutter, React).",
+  "keywords": [
+    "react",
+    "next",
+    "nextjs",
+    "html",
+    "css",
+    "javascript",
+    "js",
+    "modern-ui",
+    "modern-ux",
+    "portfolio",
+    "framer-motion",
+    "3d-website",
+    "particle-effect"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rotsy-dev/rotsy-porto-dev.git"
+  },
+  "homepage": "https://github.com/rotsy-dev/rotsy-porto-dev#readme",
+  "bugs": {
+    "url": "https://github.com/rotsy-dev/rotsy-porto-dev/issues",
+    "email": "rotsyni@gmail.com"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
+  },
+  "dependencies": {
+    "@tsparticles/react": "^4.1.3",
+    "@tsparticles/slim": "^3.9.1",
+    "framer-motion": "^11.15.0",
+    "next": "^16.2.10",
+    "react": "^19.2.0",
+    "react-countup": "^6.5.3",
+    "react-dom": "^19.2.0",
+    "react-icons": "^5.5.0",
+    "swiper": "^14.0.5",
+    "tailwind-scrollbar": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.26.0",
+    "eslint-config-next": "^16.2.10",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.3"
+  }
+}
