@@ -50,9 +50,11 @@ const en: Translation = {
     },
     home: {
         headingPre: "Transforming Ideas",
-        headingAccent: "Digital Reality",
+        headingAccent: ["Digital Reality", "Scalable Apps", "Clean Code", "Real Impact"],
+        headingInto: "Into",
         paragraph:
             "I design and build reliable, high-performing web and mobile products, combining clean code with a strong QA mindset to deliver solutions that last.",
+        downloadCV: "Download CV",
     },
     contact: {
         heading: "Let's",
@@ -69,16 +71,32 @@ const en: Translation = {
         paragraph:
             "From design to production, I support your web and mobile projects with a fullstack approach focused on quality and performance.",
         list: [
-            { title: "Fullstack Development", description: "Symfony, Node.js, React, Vue.js." },
-            { title: "QA & Testing", description: "E2E testing with Cypress and Jest." },
-            { title: "Mobile Apps", description: "Hybrid apps with Ionic and Angular." },
-            { title: "DevOps & CI/CD", description: "Docker, Kubernetes, AWS." },
-            { title: "API & Backend Architecture", description: "REST and GraphQL APIs." },
+            { title: "Fullstack Development", description: "Robust end-to-end applications with Symfony, Node.js, React and Vue.js." },
+            { title: "QA & Testing", description: "Reliable E2E test suites with Cypress and Jest to secure every release." },
+            { title: "Mobile Apps", description: "High-performance hybrid apps with Ionic and Angular, one codebase for iOS and Android." },
+            { title: "DevOps & CI/CD", description: "Automated pipelines and scalable infrastructure with Docker, Kubernetes and AWS." },
+            { title: "API & Backend Architecture", description: "Secure, documented and scalable REST and GraphQL API design." },
+            { title: "Web Integration", description: "Pixel-perfect, accessible and responsive interfaces with HTML5, CSS3 and Tailwind." },
+        ],
+        cta: "Let's discuss your project",
+        stats: [
+            { value: 20, suffix: "+", label: "Projects completed" },
+            { value: 98, suffix: "%", label: "Client satisfaction" },
+            { value: 6, suffix: "+", label: "Years of expertise" },
+            { value: 24, suffix: "h", label: "Average response time" },
+        ],
+        process: [
+            { title: "Discovery", description: "We discuss your needs and goals" },
+            { title: "Design", description: "Mockups and technical architecture" },
+            { title: "Development", description: "Clean, tested, iterative code" },
+            { title: "Delivery", description: "Deployment and post-launch support" },
         ],
     },
     work: {
         heading: "My work",
         paragraph: "A few fullstack web and mobile projects.",
+        cta: "See all my projects on GitHub",
+        categories: ["All", "Web", "Mobile", "Fullstack"],
     },
     testimonials: {
         heading: "What clients say.",

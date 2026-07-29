@@ -1,7 +1,6 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMemo, useState } from "react";
 import CountUp from "react-countup";
-import type { IconType } from "react-icons";
 import {
   FaReact,
   FaAngular,
@@ -29,30 +28,66 @@ import {
   SiGitlab,
 } from "react-icons/si";
 
+import AboutInfoList from "../../components/AboutInfoList";
 import Avatar from "../../components/Avatar";
 import Circles from "../../components/Circles";
+import IconCloud, { type CloudIcon } from "../../components/IconCloud";
 import { useLanguage } from "../../context/LanguageContext";
 import { fadeIn } from "../../variants";
 
 interface AboutInfoItem {
   title: string;
   stage?: string;
-  icons?: IconType[];
 }
 
-interface SkillIconGroup {
-  key: "frontend" | "backend" | "database" | "testing";
-  icons: IconType[];
-}
+// Calcule le nombre d'années écoulées depuis une année de départ jusqu'à aujourd'hui
+const getYearsSince = (startYear: number): number => {
+  const start = new Date(startYear, 0, 1);
+  const now = new Date();
+  let years = now.getFullYear() - start.getFullYear();
 
-const skillIcons: SkillIconGroup[] = [
-  { key: "frontend", icons: [FaReact, SiVuedotjs, FaAngular, SiIonic, SiTypescript, FaJs] },
-  { key: "backend", icons: [FaNodeJs, FaPhp, SiSymfony, SiGraphql] },
-  {
-    key: "database",
-    icons: [SiMysql, SiPostgresql, SiMongodb, FaDocker, SiKubernetes, FaAws, SiFirebase],
-  },
-  { key: "testing", icons: [SiCypress, SiJest, SiGithubactions, SiGitlab, FaGitAlt] },
+  const hasHadAnniversaryThisYear =
+    now.getMonth() > start.getMonth() ||
+    (now.getMonth() === start.getMonth() && now.getDate() >= start.getDate());
+
+  if (!hasHadAnniversaryThisYear) {
+    years -= 1;
+  }
+
+  return years;
+};
+
+const counterItems = [
+  { end: 0, key: "experience" as const, dynamic: true },
+  { end: 5, key: "companies" as const, dynamic: false },
+  { end: 20, key: "projects" as const, dynamic: false },
+  { end: 25, key: "technologies" as const, dynamic: false },
+];
+
+// Liste plate de toutes les technologies affichées dans le globe 3D
+const skillIcons: CloudIcon[] = [
+  { Icon: FaReact, label: "React", color: "#61DAFB" },
+  { Icon: SiVuedotjs, label: "Vue.js", color: "#4FC08D" },
+  { Icon: FaAngular, label: "Angular", color: "#DD0031" },
+  { Icon: SiIonic, label: "Ionic", color: "#3880FF" },
+  { Icon: SiTypescript, label: "TypeScript", color: "#3178C6" },
+  { Icon: FaJs, label: "JavaScript", color: "#F7DF1E" },
+  { Icon: FaNodeJs, label: "Node.js", color: "#339933" },
+  { Icon: FaPhp, label: "PHP", color: "#777BB4" },
+  { Icon: SiSymfony, label: "Symfony", color: "#E8E8E8" },
+  { Icon: SiGraphql, label: "GraphQL", color: "#E10098" },
+  { Icon: SiMysql, label: "MySQL", color: "#4479A1" },
+  { Icon: SiPostgresql, label: "PostgreSQL", color: "#6E9EFF" },
+  { Icon: SiMongodb, label: "MongoDB", color: "#47A248" },
+  { Icon: FaDocker, label: "Docker", color: "#2496ED" },
+  { Icon: SiKubernetes, label: "Kubernetes", color: "#326CE5" },
+  { Icon: FaAws, label: "AWS", color: "#FF9900" },
+  { Icon: SiFirebase, label: "Firebase", color: "#FFCA28" },
+  { Icon: SiCypress, label: "Cypress", color: "#69D3A0" },
+  { Icon: SiJest, label: "Jest", color: "#E5534B" },
+  { Icon: SiGithubactions, label: "GitHub Actions", color: "#2088FF" },
+  { Icon: SiGitlab, label: "GitLab", color: "#FC6D26" },
+  { Icon: FaGitAlt, label: "Git", color: "#F05032" },
 ];
 
 const About = () => {
@@ -60,31 +95,23 @@ const About = () => {
   const { t } = useLanguage();
   const { about } = t;
 
-  const aboutData: { title: string; info: AboutInfoItem[] }[] = [
-    {
-      title: about.tabs.skills,
-      info: skillIcons.map((group) => ({
-        title: about.skillGroups[group.key],
-        icons: group.icons,
-      })),
-    },
-    {
-      title: about.tabs.languages,
-      info: about.languagesInfo,
-    },
-    {
-      title: about.tabs.experience,
-      info: about.experienceInfo,
-    },
-    {
-      title: about.tabs.credentials,
-      info: about.credentialsInfo,
-    },
+  const yearsOfExperience = getYearsSince(2020);
+  const isSkillsTab = index === 0;
+
+  const listTabs: { title: string; info: AboutInfoItem[] }[] = [
+    { title: about.tabs.languages, info: about.languagesInfo },
+    { title: about.tabs.experience, info: about.experienceInfo },
+    { title: about.tabs.credentials, info: about.credentialsInfo },
   ];
+
+  const tabTitles = [about.tabs.skills, ...listTabs.map((tab) => tab.title)];
+
+  // useMemo pour ne pas recréer le tableau à chaque re-render (IconCloud en dépend)
+  const icons = useMemo(() => skillIcons, []);
 
   return (
     <div className="h-full bg-primary/30 py-32 text-center xl:text-left">
-      <Circles />
+      {!isSkillsTab && <Circles />}
 
       <motion.div
         variants={fadeIn("right", 0.2)}
@@ -125,41 +152,27 @@ const About = () => {
             className="hidden md:flex md:max-w-xl xl:max-w-none mx-auto xl:mx-0 mb-8"
           >
             <div className="flex flex-1 xl:gap-x-6">
-              <div className="relative flex-1 after:w-[1px] after:h-full after:bg-white/10 after:absolute after:top-0 after:right-0">
-                <div className="text-2xl xl:text-4xl font-extrabold text-accent mb-2">
-                  <CountUp start={0} end={8} duration={5} />
+              {counterItems.map((counter, i) => (
+                <div
+                  key={counter.key}
+                  className={`relative flex-1 group ${i !== counterItems.length - 1
+                    ? "after:w-[1px] after:h-full after:bg-white/10 after:absolute after:top-0 after:right-0"
+                    : ""
+                    }`}
+                >
+                  <div className="text-2xl xl:text-4xl font-extrabold text-accent mb-2 transition-transform duration-300 group-hover:-translate-y-0.5">
+                    <CountUp
+                      start={0}
+                      end={counter.dynamic ? yearsOfExperience : counter.end}
+                      duration={5}
+                    />
+                    <span className="text-accent">+</span>
+                  </div>
+                  <div className="text-xs uppercase tracking-[1px] leading-[1.4] max-w-[100px]">
+                    {about.counters[counter.key]}
+                  </div>
                 </div>
-                <div className="text-xs uppercase tracking-[1px] leading-[1.4] max-w-[100px]">
-                  {about.counters.experience}
-                </div>
-              </div>
-
-              <div className="relative flex-1 after:w-[1px] after:h-full after:bg-white/10 after:absolute after:top-0 after:right-0">
-                <div className="text-2xl xl:text-4xl font-extrabold text-accent mb-2">
-                  <CountUp start={0} end={5} duration={5} />
-                </div>
-                <div className="text-xs uppercase tracking-[1px] leading-[1.4] max-w-[100px]">
-                  {about.counters.companies}
-                </div>
-              </div>
-
-              <div className="relative flex-1 after:w-[1px] after:h-full after:bg-white/10 after:absolute after:top-0 after:right-0">
-                <div className="text-2xl xl:text-4xl font-extrabold text-accent mb-2">
-                  <CountUp start={0} end={20} duration={5} />
-                </div>
-                <div className="text-xs uppercase tracking-[1px] leading-[1.4] max-w-[100px]">
-                  {about.counters.projects}
-                </div>
-              </div>
-
-              <div className="relative flex-1">
-                <div className="text-2xl xl:text-4xl font-extrabold text-accent mb-2">
-                  <CountUp start={0} end={25} duration={5} />
-                </div>
-                <div className="text-xs uppercase tracking-[1px] leading-[1.4] max-w-[100px]">
-                  {about.counters.technologies}
-                </div>
-              </div>
+              ))}
             </div>
           </motion.div>
         </div>
@@ -169,41 +182,63 @@ const About = () => {
           initial="hidden"
           animate="show"
           exit="hidden"
-          className="flex flex-col w-full xl:max-w-[48%] h-[480px]"
+          className="flex flex-col w-full xl:max-w-[48%] min-h-[480px]"
         >
-          <div className="flex gap-x-4 xl:gap-x-8 mx-auto xl:mx-0 mb-4">
-            {aboutData.map((item, itemI) => (
-              <div
+          <div
+            role="tablist"
+            aria-label={about.tabs.skills}
+            className="flex gap-x-4 xl:gap-x-8 mx-auto xl:mx-0 mb-4"
+          >
+            {tabTitles.map((title, itemI) => (
+              <button
                 key={itemI}
-                className={`${index === itemI &&
-                  "text-accent after:w-[100%] after:bg-accent after:transition-all after:duration-300"
-                  } cursor-pointer capitalize xl:text-lg relative after:w-8 after:h-[2px] after:bg-white after:absolute after:-bottom-1 after:left-0`}
+                role="tab"
+                aria-selected={index === itemI}
                 onClick={() => setIndex(itemI)}
+                className={`relative pb-1 cursor-pointer capitalize xl:text-lg outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-accent/60 rounded-sm ${index === itemI ? "text-accent" : "text-white/80 hover:text-white"
+                  }`}
               >
-                {item.title}
-              </div>
+                {title}
+                {index === itemI && (
+                  <motion.div
+                    layoutId="about-tab-underline"
+                    className="absolute -bottom-1 left-0 right-0 h-[2px] bg-accent"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                  />
+                )}
+              </button>
             ))}
           </div>
 
           <div className="py-2 xl:py-6 flex flex-col gap-y-2 xl:gap-y-4 items-center xl:items-start overflow-y-auto">
-            {aboutData[index].info.map((item, itemI) => (
-              <div
-                key={itemI}
-                className="flex-1 flex flex-col md:flex-row max-w-max gap-x-2 items-center text-center text-white/60"
-              >
-                <div className="font-light mb-2 md:mb-0">{item.title}</div>
-                <div className="hidden md:flex">-</div>
-                <div>{item.stage}</div>
-
-                <div className="flex gap-x-4">
-                  {item.icons?.map((Icon, iconI) => (
-                    <div key={iconI} className="text-2xl text-white">
-                      <Icon />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+            <AnimatePresence mode="wait">
+              {isSkillsTab ? (
+                <motion.div
+                  key="skills"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="w-full flex justify-center xl:justify-start"
+                >
+                  <IconCloud icons={icons} maxSize={380} iconSize={32} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="w-full"
+                >
+                  <AboutInfoList
+                    items={listTabs[index - 1].info}
+                    variant={index === 1 ? "languages" : index === 2 ? "timeline" : "credentials"}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
       </div>

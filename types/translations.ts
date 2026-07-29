@@ -8,6 +8,18 @@ export interface ServiceItem {
     description: string;
 }
 
+export interface StatItem {
+    value: number;
+    suffix?: string;
+    prefix?: string;
+    label: string;
+}
+
+export interface ProcessStepItem {
+    title: string;
+    description: string;
+}
+
 export interface TestimonialItem {
     name: string;
     position: string;
@@ -52,8 +64,11 @@ export interface Translation {
     };
     home: {
         headingPre: string;
-        headingAccent: string;
+        headingAccent: string[];
+        headingInto: string;
         paragraph: string;
+        downloadCV: string;
+
     };
     contact: {
         heading: string;
@@ -69,10 +84,15 @@ export interface Translation {
         heading: string;
         paragraph: string;
         list: ServiceItem[];
+        cta: string;
+        stats: StatItem[];
+        process: ProcessStepItem[];
     };
     work: {
         heading: string;
         paragraph: string;
+        cta: string;
+        categories: string[];
     };
     testimonials: {
         heading: string;

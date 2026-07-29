@@ -50,9 +50,11 @@ const fr: Translation = {
     },
     home: {
         headingPre: "Transformer des idées",
-        headingAccent: "en réalité numérique",
+        headingAccent: ["réalité numérique", "apps performantes", "code propre", "impact réel"],
+        headingInto: "en",
         paragraph:
             "Je conçois et développe des produits web et mobiles fiables et performants, en alliant code propre et culture QA pour livrer des solutions durables.",
+        downloadCV: "Télécharger CV",
     },
     contact: {
         heading: "Discutons",
@@ -69,16 +71,32 @@ const fr: Translation = {
         paragraph:
             "De la conception à la mise en production, j'accompagne vos projets web et mobiles avec une approche fullstack, orientée qualité et performance.",
         list: [
-            { title: "Développement Fullstack", description: "Symfony, Node.js, React, Vue.js." },
-            { title: "Tests & Assurance Qualité", description: "Tests E2E avec Cypress et Jest." },
-            { title: "Applications Mobiles", description: "Apps hybrides avec Ionic et Angular." },
-            { title: "DevOps & CI/CD", description: "Docker, Kubernetes, AWS." },
-            { title: "API & Architecture Backend", description: "API REST et GraphQL." },
+            { title: "Développement Fullstack", description: "Applications robustes de bout en bout avec Symfony, Node.js, React et Vue.js." },
+            { title: "Tests & Assurance Qualité", description: "Suites de tests E2E fiables avec Cypress et Jest pour sécuriser vos livraisons." },
+            { title: "Applications Mobiles", description: "Apps hybrides performantes avec Ionic et Angular, un seul code pour iOS et Android." },
+            { title: "DevOps & CI/CD", description: "Pipelines automatisés et infrastructure scalable avec Docker, Kubernetes et AWS." },
+            { title: "API & Architecture Backend", description: "Conception d'API REST et GraphQL sécurisées, documentées et évolutives." },
+            { title: "Intégration Web", description: "Interfaces fidèles au design, accessibles et responsives avec HTML5, CSS3 et Tailwind." },
+        ],
+        cta: "Discutons de votre projet",
+        stats: [
+            { value: 20, suffix: "+", label: "Projets réalisés" },
+            { value: 98, suffix: "%", label: "Satisfaction client" },
+            { value: 6, suffix: "+", label: "Années d'expertise" },
+            { value: 24, suffix: "h", label: "Temps de réponse moyen" },
+        ],
+        process: [
+            { title: "Découverte", description: "On échange sur vos besoins et objectifs" },
+            { title: "Conception", description: "Maquettes et architecture technique" },
+            { title: "Développement", description: "Code propre, testé, itératif" },
+            { title: "Livraison", description: "Déploiement et suivi post-lancement" },
         ],
     },
     work: {
         heading: "Mes projets",
         paragraph: "Quelques projets réalisés en web et mobile fullstack.",
+        cta: "Voir tous mes projets sur GitHub",
+        categories: ["Tous", "Web", "Mobile", "Fullstack"],
     },
     testimonials: {
         heading: "Ce qu'ils disent.",

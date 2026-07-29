@@ -5,10 +5,12 @@ import ProjectsBtn from "../components/ProjectsBtn";
 import Avatar from "../components/Avatar";
 
 import { useLanguage } from "../context/LanguageContext";
+import { useTypewriter } from "../hooks/useTypewriter";
 import { fadeIn } from "../variants";
 
 const Home = () => {
   const { t } = useLanguage();
+  const typedAccent = useTypewriter({ words: t.home.headingAccent });
 
   return (
     <div className="bg-primary/60 h-full">
@@ -21,8 +23,11 @@ const Home = () => {
             exit="hidden"
             className="h1"
           >
-            {t.home.headingPre} <br /> Into{" "}
-            <span className="text-accent">{t.home.headingAccent}</span>
+            {t.home.headingPre} <br /> {t.home.headingInto}{" "}
+            <span className="text-accent">
+              {typedAccent}
+              <span className="border-r-2 border-accent animate-pulse ml-1" aria-hidden />
+            </span>
           </motion.h1>
 
           <motion.p
@@ -35,17 +40,32 @@ const Home = () => {
             {t.home.paragraph}
           </motion.p>
 
-          <div className="flex justify-center xl:hidden relative">
+          <div className="flex justify-center gap-x-4 xl:hidden relative">
             <ProjectsBtn />
+            <a
+              href="/cv.pdf"
+              download="Rotsy-Raharinosy-CV.pdf"
+              className="flex items-center gap-x-2 px-6 py-3 border border-accent text-accent rounded-full hover:bg-accent hover:text-primary transition-all duration-300"
+            >
+              {t.home.downloadCV ?? "Télécharger CV"}
+            </a>
           </div>
+
           <motion.div
             variants={fadeIn("down", 0.4)}
             initial="hidden"
             animate="show"
             exit="hidden"
-            className="hidden xl:flex"
+            className="hidden xl:flex items-center gap-x-4"
           >
             <ProjectsBtn />
+            <a
+              href="/cv.pdf"
+              download="Rotsy-Raharinosy-CV.pdf"
+              className="flex items-center gap-x-2 px-6 py-3 border border-accent text-accent rounded-full hover:bg-accent hover:text-primary transition-all duration-300"
+            >
+              {t.home.downloadCV ?? "Télécharger CV"}
+            </a>
           </motion.div>
         </div>
       </div>
