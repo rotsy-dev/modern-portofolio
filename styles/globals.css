@@ -116,4 +116,24 @@
   .textarea {
     @apply w-full h-[180px] p-6 rounded-lg resize-none;
   }
+
+  /* Pagination personnalisée pour le slider de projets (Work) */
+.work-swiper .swiper-pagination {
+  bottom: 0 !important;
+}
+
+.work-swiper .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  opacity: 1;
+  margin: -12 5px !important;
+  transition: all 0.3s ease;
+}
+
+.work-swiper .swiper-pagination-bullet-active {
+  background: var(--accent, #e838cc);
+  width: 24px;
+  border-radius: 9999px;
+}
 }

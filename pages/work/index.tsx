@@ -11,7 +11,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { fadeIn } from "../../variants";
 
 // Remplace par ton profil GitHub réel
-const GITHUB_URL = "https://github.com/your-username";
+const GITHUB_URL = "https://www.linkedin.com/in/rotsy-maminintsoa-raharinosy/";
 
 const Work = () => {
   const { t } = useLanguage();
@@ -19,18 +19,18 @@ const Work = () => {
   const [activeCategory, setActiveCategory] = useState(work.categories[0]);
 
   return (
-    <div className="relative h-full bg-primary/30 py-36 flex items-center overflow-hidden">
-      {/* halo décoratif animé en fond */}
+    <div className="relative h-full bg-primary/30 pt-40 pb-16 lg:pt-28 lg:pb-20 xl:pt-32 flex items-center overflow-hidden">
+      {/* halo décoratif unique et discret */}
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-accent/10 blur-3xl"
-        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute -bottom-32 -right-24 w-80 h-80 rounded-full bg-accent/[0.08] blur-3xl"
+        animate={{ scale: [1, 1.12, 1], opacity: [0.4, 0.65, 0.4] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
       />
 
       <Circles />
       <div className="container mx-auto relative">
-        <div className="flex flex-col xl:flex-row gap-x-8">
+        <div className="flex flex-col xl:flex-row gap-x-12">
           {/* text */}
           <div className="text-center flex xl:w-[30vw] flex-col lg:text-left mb-4 xl:mb-0">
             <motion.h2
@@ -74,13 +74,13 @@ const Work = () => {
             </motion.div>
           </div>
 
-          {/* filtres + slider */}
+          {/* filtres + liste */}
           <motion.div
             variants={fadeIn("down", 0.6)}
             initial="hidden"
             animate="show"
             exit="hidden"
-            className="w-full xl:max-w-[65%]"
+            className="relative w-full xl:max-w-[70%]"
           >
             <WorkFilters
               categories={work.categories}

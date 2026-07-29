@@ -65,6 +65,13 @@ const en: Translation = {
         messagePlaceholder: "Message...",
         submitBtn: "Let's talk",
         successMessage: "Thank you. I will get back to you ASAP.",
+        infoHeading: "Other ways to reach me",
+        info: [
+            { icon: "mail", label: "Email", value: "rotsyni@gmail.com", href: "mailto:rotsyni@gmail.com" },
+            { icon: "phone", label: "Phone", value: "+261 34 80 350 05", href: "tel:+261348035005" },
+            { icon: "whatsapp", label: "WhatsApp", value: "+261 34 80 350 05", href: "https://wa.me/261348035005" },
+            { icon: "linkedin", label: "LinkedIn", value: "@rotsyraharinosy", href: "https://www.linkedin.com/in/rotsy-maminintsoa-raharinosy/" },
+        ],
     },
     services: {
         heading: "My services",
@@ -97,6 +104,60 @@ const en: Translation = {
         paragraph: "A few fullstack web and mobile projects.",
         cta: "See all my projects on GitHub",
         categories: ["All", "Web", "Mobile", "Fullstack"],
+        readMore: "Read more",
+        projects: {
+            isi: {
+                title: "ISI — Quotation & Workflow Management",
+                company: "Menuiserie de la Grande Ile",
+                description:
+                    "Web platform for order tracking at an aluminum joinery workshop, covering the entire quotation-to-delivery process, with real-time tracking of over 100 orders per month for +30 active users.",
+                highlights: [
+                    "+50% application performance through code optimization",
+                    "Strengthened security and authentication protocols",
+                    "Automated data backup systems",
+                ],
+            },
+            isiMobile: {
+                title: "ISI Mobile — Field Tracking & Validation",
+                company: "Menuiserie de la Grande Ile",
+                description:
+                    "Mobile companion app to the ISI platform, letting field teams review quotes, validate pricing, and track orders on the go, with authentication synced to the existing web system.",
+                highlights: [
+                    "Shared session authentication with the web platform",
+                    "Adaptive interface based on each user's permissions",
+                    "Real-time stats and tracking accessible on the move",
+                ],
+            },
+            qa: {
+                title: "Automated E2E Testing Strategy",
+                company: "SmartPredict",
+                description:
+                    "Design and implementation of a complete E2E testing strategy with Cypress, covering all critical user journeys, integrated directly into the CI/CD pipeline.",
+                highlights: [
+                    "Significant reduction in delivery time and production regressions",
+                    "Scalable, maintainable automated testing framework",
+                    "Performance optimization via Google Lighthouse",
+                ],
+            },
+            office: {
+                title: "Invoicing & Inventory Management Solution",
+                company: "MANAO SIDINA",
+                description:
+                    "Development of a complete spreadsheet solution and an invoicing and inventory management app to streamline a company's financial and logistics processes.",
+            },
+            sales: {
+                title: "Financial Process Automation",
+                company: "Airtel Madagascar",
+                description:
+                    "Oversaw the full invoicing cycle and built internal tools with PHP/VBA Excel to automate the company's financial processes.",
+            },
+            maritime: {
+                title: "Maritime Traffic Management",
+                company: "Agence Portuaire Maritime et Fluviale (APMF)",
+                description:
+                    "Design of a maritime traffic management application, improving surveillance and safety of port operations.",
+            },
+        },
     },
     testimonials: {
         heading: "What clients say.",

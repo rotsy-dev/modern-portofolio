@@ -1,42 +1,29 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
-import { useMemo } from "react";
-import { BsArrowRight } from "react-icons/bs";
+import { useMemo, useRef, useState } from "react";
+import { RxArrowTopRight, RxChevronLeft, RxChevronRight } from "react-icons/rx";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 import "swiper/css/pagination";
 
-export interface WorkImage {
-  title: string;
-  path: string;
-  link: string;
-  /** Catégorie du projet, ex. "Web", "Mobile", "Fullstack" — doit correspondre aux valeurs de work.categories (hors "Tous"/"All") */
-  category: string;
-}
+import { projectsMeta } from "../data/projects";
+import { useLanguage } from "../context/LanguageContext";
+import ProjectLogo from "./ProjectLogo";
+import WorkModal from "./WorkModal";
+import type { ProjectMeta } from "../data/projects";
+import type { ProjectTranslation } from "../types/translations";
+import TechIcon from "./techIcons";
+
+export type WorkProject = ProjectMeta & ProjectTranslation;
 
 interface WorkSliderProps {
-  /** Catégorie active sélectionnée dans WorkFilters */
   category?: string;
-  /** Libellé correspondant à "toutes les catégories" (ex. work.categories[0], "Tous" ou "All") — si category === allLabel, aucun filtre n'est appliqué */
   allLabel?: string;
 }
-
-// Liste plate des projets — remplace path/link/title/category par tes vrais projets
-const projects: WorkImage[] = [
-  { title: "title", path: "/thumb1.jpg", link: "http://example.com", category: "Web" },
-  { title: "title", path: "/thumb2.jpg", link: "http://example.com", category: "Mobile" },
-  { title: "title", path: "/thumb3.jpg", link: "http://example.com", category: "Fullstack" },
-  { title: "title", path: "/thumb4.png", link: "http://example.com", category: "Web" },
-  { title: "title", path: "/thumb4.png", link: "http://example.com", category: "Fullstack" },
-  { title: "title", path: "/thumb1.jpg", link: "http://example.com", category: "Mobile" },
-  { title: "title", path: "/thumb2.jpg", link: "http://example.com", category: "Web" },
-  { title: "title", path: "/thumb3.jpg", link: "http://example.com", category: "Fullstack" },
-];
 
 const CHUNK_SIZE = 4;
 
@@ -49,81 +36,168 @@ const chunk = <T,>(arr: T[], size: number): T[][] => {
 };
 
 const WorkSlider = ({ category, allLabel }: WorkSliderProps) => {
+  const { t } = useLanguage();
+  const [selectedProject, setSelectedProject] = useState<WorkProject | null>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
+
+  const projects: WorkProject[] = useMemo(
+    () =>
+      projectsMeta.map((meta) => ({
+        ...meta,
+        ...t.work.projects[meta.id],
+      })),
+    [t]
+  );
+
   const filtered = useMemo(() => {
     if (!category || category === allLabel) return projects;
     return projects.filter((p) => p.category === category);
-  }, [category, allLabel]);
+  }, [category, allLabel, projects]);
 
   const slides = useMemo(() => chunk(filtered, CHUNK_SIZE), [filtered]);
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={category ?? "all"}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.25 }}
-      >
-        {slides.length === 0 ? (
-          <div className="h-[280px] sm:h-[480px] flex items-center justify-center text-white/40 text-sm">
-            Aucun projet dans cette catégorie pour le moment.
+    <>
+      {/* meta + navigation */}
+      <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-widest text-white/35">
+        <span>
+          {filtered.length} {filtered.length > 1 ? "projects" : "project"}
+        </span>
+        {slides.length > 1 && (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Previous"
+              onClick={() => swiperRef.current?.slidePrev()}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/50 transition-all duration-300 hover:border-accent/60 hover:text-accent"
+            >
+              <RxChevronLeft className="text-base" />
+            </button>
+            <button
+              type="button"
+              aria-label="Next"
+              onClick={() => swiperRef.current?.slideNext()}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/50 transition-all duration-300 hover:border-accent/60 hover:text-accent"
+            >
+              <RxChevronRight className="text-base" />
+            </button>
           </div>
-        ) : (
-          <Swiper
-            spaceBetween={10}
-            pagination={{ clickable: true }}
-            modules={[Pagination]}
-            className="h-[280px] sm:h-[480px]"
-          >
-            {slides.map((slide, i) => (
-              <SwiperSlide key={i}>
-                <div className="grid grid-cols-2 grid-rows-2 gap-2 sm:gap-4 h-full">
-                  {slide.map((image, imageI) => (
-                    <div
-                      className="relative rounded-lg overflow-hidden flex items-center justify-center group"
-                      key={imageI}
-                    >
-                      <div className="relative w-full h-full overflow-hidden group">
-                        <Image
-                          src={image.path}
-                          alt={image.title}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 640px) 50vw, (max-width: 1280px) 30vw, 25vw"
-                        />
-
-                        <div
-                          className="absolute inset-0 bg-gradient-to-l from-transparent via-[#e838cc] to-[#4a22bd] opacity-0 group-hover:opacity-80 transition-all duration-700"
-                          aria-hidden
-                        />
-
-                        <div className="absolute bottom-0 translate-y-full group-hover:-translate-y-10 group-hover:xl:-translate-y-20 transition-all duration-300">
-                          <Link
-                            href={image.link}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                            className="flex items-center gap-x-2 text-[13px] tracking-[0.2em] px-2"
-                          >
-                            <div className="delay-100">LIVE</div>
-                            <div className="translate-y-[500%] group-hover:translate-y-0 transition-all duration-300 delay-150">
-                              PROJECT
-                            </div>
-                            <div className="text-xl translate-y-[500%] group-hover:translate-y-0 transition-all duration-300 delay-150">
-                              <BsArrowRight aria-hidden />
-                            </div>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
         )}
-      </motion.div>
-    </AnimatePresence>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={category ?? "all"}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.25 }}
+        >
+          {slides.length === 0 ? (
+            <div className="flex h-[320px] items-center justify-center text-center text-sm text-white/40">
+              No projects match this filter yet.
+            </div>
+          ) : (
+            <Swiper
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
+              spaceBetween={16}
+              pagination={{ clickable: true }}
+              modules={[Pagination]}
+              autoHeight
+              className="work-swiper pb-10"
+            >
+              {slides.map((slide, i) => (
+                <SwiperSlide key={i}>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    {slide.map((project) => (
+                      <motion.button
+                        type="button"
+                        key={project.id}
+                        onClick={() => setSelectedProject(project)}
+                        whileHover={{ y: -6 }}
+                        whileTap={{ y: -2 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                        className="group relative flex h-full flex-col gap-4 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-left transition-colors duration-300 hover:border-accent/40 hover:bg-white/[0.06] hover:shadow-2xl hover:shadow-black/30"
+                      >
+                        {/* lueur discrète au survol */}
+                        <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full bg-accent/0 blur-2xl transition-colors duration-500 group-hover:bg-accent/20" />
+
+                        <div className="relative flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-3.5">
+                            <ProjectLogo
+                              meta={project}
+                              className="h-12 w-12 shadow-lg shadow-black/20"
+                              iconClassName="text-xl"
+                            />
+                            <div>
+                              <h4 className="text-sm font-semibold leading-snug text-white sm:text-base">
+                                {project.title}
+                              </h4>
+                              <p className="mt-0.5 text-xs text-white/40">{project.company}</p>
+                            </div>
+                          </div>
+                          <RxArrowTopRight
+                            className="mt-1 shrink-0 text-lg text-white/25 transition-all duration-300 group-hover:rotate-45 group-hover:text-accent"
+                            aria-hidden
+                          />
+                        </div>
+
+                        <p className="relative text-[13px] leading-relaxed text-white/60 line-clamp-3">
+                          {project.description}
+                        </p>
+
+                        <div className="relative mt-auto flex flex-wrap items-center gap-2 border-t border-white/5 pt-4">
+                          {project.technologies.slice(0, 6).map((tech) => (
+                            <TechIcon key={tech} tech={tech} />
+                          ))}
+                          {project.technologies.length > 6 && (
+                            <span className="text-[10px] font-medium text-white/40">
+                              +{project.technologies.length - 6}
+                            </span>
+                          )}
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      <WorkModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+
+      <style jsx global>{`
+        .work-swiper .swiper-pagination {
+          bottom: 0 !important;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .work-swiper .swiper-pagination-bullet {
+          width: 6px;
+          height: 6px;
+          margin: 0 !important;
+          border-radius: 9999px;
+          background-color: rgba(255, 255, 255, 0.25);
+          opacity: 1;
+          transition: all 0.25s ease;
+        }
+
+        .work-swiper .swiper-pagination-bullet:hover {
+          background-color: rgba(255, 255, 255, 0.45);
+        }
+
+        .work-swiper .swiper-pagination-bullet-active {
+          width: 22px;
+          border-radius: 9999px;
+          background-color: var(--color-accent, #ef4444);
+        }
+      `}</style>
+    </>
   );
 };
 

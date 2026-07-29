@@ -79,6 +79,8 @@ export interface Translation {
         messagePlaceholder: string;
         submitBtn: string;
         successMessage: string;
+        infoHeading: string;
+        info: ContactInfoItem[];
     };
     services: {
         heading: string;
@@ -93,11 +95,27 @@ export interface Translation {
         paragraph: string;
         cta: string;
         categories: string[];
+        readMore: string;
+        projects: Record<string, ProjectTranslation>;
     };
     testimonials: {
         heading: string;
         list: TestimonialItem[];
     };
+}
+
+export interface ContactInfoItem {
+    icon: "mail" | "phone" | "whatsapp" | "linkedin";
+    label: string;
+    value: string;
+    href: string;
+}
+
+export interface ProjectTranslation {
+    title: string;
+    company: string;
+    description: string;
+    highlights?: string[];
 }
 
 export type LanguageCode = "en" | "fr";
