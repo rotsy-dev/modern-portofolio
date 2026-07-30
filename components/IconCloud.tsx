@@ -38,14 +38,15 @@ const iconToDataUrl = (Icon: IconType, color: string) => {
     return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgString)))}`;
 };
 
-const IconCloud = ({ icons, maxSize = 420, iconSize = 30 }: IconCloudProps) => {
+const IconCloud = ({ icons, maxSize = 380, iconSize = 30 }: IconCloudProps) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const itemsRef = useRef<SphereItem[]>([]);
     const projectedRef = useRef<ProjectedItem[]>([]);
-    const rotationRef = useRef({ x: 0, y: 0 });
-    const targetRotationRef = useRef({ x: 0, y: 0 });
+    // Inclinaison initiale de ~20° (0.35 rad) sur l'axe X pour un effet 3D réaliste
+    const rotationRef = useRef({ x: 0.35, y: 0 });
+    const targetRotationRef = useRef({ x: 0.35, y: 0 });
     const draggingRef = useRef(false);
     const lastPointerRef = useRef({ x: 0, y: 0 });
     const hoveredIdRef = useRef<number | null>(null);
@@ -61,7 +62,7 @@ const IconCloud = ({ icons, maxSize = 420, iconSize = 30 }: IconCloudProps) => {
         if (!el) return;
         const observer = new ResizeObserver((entries) => {
             const width = entries[0]?.contentRect.width ?? maxSize;
-            setSize(Math.max(180, Math.min(width, maxSize)));
+            setSize(Math.max(160, Math.min(width, maxSize)));
         });
         observer.observe(el);
         return () => observer.disconnect();
@@ -182,12 +183,23 @@ const IconCloud = ({ icons, maxSize = 420, iconSize = 30 }: IconCloudProps) => {
                 hoverAnimRef.current[p.id] = current + (targetVal - current) * 0.2;
                 const hoverT = hoverAnimRef.current[p.id];
 
-                const depthOpacity = Math.max(0.2, Math.min(1, (p.depthZ + radius) / (radius * 2)));
+                // Correction de la profondeur : depthZ < 0 = AVANT (100% opaque), depthZ > 0 = ARRIÈRE (foulé/atténué)
+                const depthRatio = Math.max(0, Math.min(1, (radius - p.depthZ) / (radius * 2)));
+                const depthOpacity = 0.25 + depthRatio * 0.75;
                 const opacity = Math.min(1, depthOpacity + hoverT * 0.5);
                 const s = iconSize * (size / maxSize) * p.scale * (1 + hoverT);
 
+                // Flou de profondeur progressif (Depth Blur) pour l'arrière-plan
+                const isBack = p.depthZ > 0;
+                const depthBlur = isBack ? Math.min(2.5, (p.depthZ / radius) * 2) : 0;
+
+                ctx.save();
+
+                if (depthBlur > 0.2 && hoverT <= 0.02) {
+                    ctx.filter = `blur(${depthBlur.toFixed(1)}px)`;
+                }
+
                 if (hoverT > 0.02) {
-                    ctx.save();
                     ctx.shadowColor = "rgba(255,255,255,0.95)";
                     ctx.shadowBlur = 22 * hoverT;
                 }
@@ -196,11 +208,8 @@ const IconCloud = ({ icons, maxSize = 420, iconSize = 30 }: IconCloudProps) => {
                 if (p.img.complete && p.img.naturalWidth > 0) {
                     ctx.drawImage(p.img, p.screenX - s / 2, p.screenY - s / 2, s, s);
                 }
-                ctx.globalAlpha = 1;
 
-                if (hoverT > 0.02) {
-                    ctx.restore();
-                }
+                ctx.restore();
             });
 
             raf = requestAnimationFrame(render);
@@ -266,7 +275,7 @@ const IconCloud = ({ icons, maxSize = 420, iconSize = 30 }: IconCloudProps) => {
     }, []);
 
     return (
-        <div ref={wrapperRef} className="w-full max-w-[420px] mx-auto">
+        <div ref={wrapperRef} className="w-full max-w-[260px] sm:max-w-[320px] md:max-w-[380px] mx-auto">
             <canvas
                 ref={canvasRef}
                 style={{ width: size, height: size, touchAction: "none", cursor: "grab" }}

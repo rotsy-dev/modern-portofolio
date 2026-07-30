@@ -11,18 +11,32 @@ import { fadeIn } from "../../variants";
 const Contact = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { t } = useLanguage();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     setStatus("idle");
+    setErrorMessage(null);
+
+    const apiKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+
+    if (!apiKey) {
+      console.error("Clé API Web3Forms manquante (NEXT_PUBLIC_WEB3FORMS_KEY non définie).");
+      setStatus("error");
+      setErrorMessage(
+        "Configuration de contact incomplète (clé d'envoi manquante). Merci de me contacter directement par e-mail."
+      );
+      setIsLoading(false);
+      return;
+    }
 
     const form = event.currentTarget;
     const formData = new FormData(form);
 
     const payload = {
-      access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+      access_key: apiKey,
       name: formData.get("name"),
       email: formData.get("email"),
       subject: formData.get("subject"),
@@ -42,12 +56,19 @@ const Contact = () => {
         setStatus("success");
         form.reset();
       } else {
-        console.error(result);
+        console.error("Erreur de soumission Web3Forms:", result);
         setStatus("error");
+        setErrorMessage(
+          result.message ||
+            "Une erreur est survenue lors de l'envoi. Merci de réessayer ou de m'écrire directement par e-mail."
+        );
       }
     } catch (error) {
-      console.error(error);
+      console.error("Erreur réseau Web3Forms:", error);
       setStatus("error");
+      setErrorMessage(
+        "Une erreur réseau est survenue. Merci de vérifier votre connexion ou de m'écrire directement par e-mail."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -140,7 +161,8 @@ const Contact = () => {
               )}
               {status === "error" && (
                 <p className="text-sm text-red-400" role="alert">
-                  Une erreur est survenue. Merci de réessayer ou de m&apos;écrire directement par e-mail.
+                  {errorMessage ??
+                    "Une erreur est survenue. Merci de réessayer ou de m'écrire directement par e-mail."}
                 </p>
               )}
             </motion.form>

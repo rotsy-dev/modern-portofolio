@@ -81,11 +81,11 @@
   }
 
     body {
-      @apply bg-secondary text-foreground overflow-hidden leading-relaxed antialiased transition-colors duration-300;
+      @apply bg-secondary text-foreground overflow-x-hidden leading-relaxed antialiased transition-colors duration-300;
     }
 
   .page {
-    @apply w-full h-screen overflow-hidden;
+    @apply w-full min-h-screen h-auto overflow-y-auto pb-28 xl:h-screen xl:overflow-hidden xl:pb-0;
   }
 
   .h1 {

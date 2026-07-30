@@ -9,6 +9,19 @@ import { ThemeProvider } from "../context/ThemeContext";
 
 import "../styles/globals.css";
 
+// Masquage et synchronisation d'opacité avec popLayout (transition douce sans chevauchement)
+const pageVariants = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: { duration: 0.4, delay: 0.3, ease: "easeOut" },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.18, ease: "easeIn" },
+  },
+};
+
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
@@ -16,8 +29,15 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ThemeProvider>
       <LanguageProvider>
         <Layout>
-          <AnimatePresence mode="wait">
-            <motion.div key={router.route} className="h-full">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.div
+              key={router.asPath}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="h-full"
+            >
               <Transition />
               <Component {...pageProps} />
             </motion.div>

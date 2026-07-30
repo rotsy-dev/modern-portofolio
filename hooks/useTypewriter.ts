@@ -22,10 +22,28 @@ export const useTypewriter = ({
     const [isDeleting, setIsDeleting] = useState(false);
     const [displayedText, setDisplayedText] = useState("");
 
+    const wordsKey = words.join(",");
+
+    // Réinitialise l'état de la machine à écrire si le contenu des mots change (ex: changement de langue FR -> EN)
+    useEffect(() => {
+        setWordIndex(0);
+        setCharIndex(0);
+        setIsDeleting(false);
+        setDisplayedText("");
+    }, [wordsKey]);
+
     useEffect(() => {
         if (words.length === 0) return;
 
-        const currentWord = words[wordIndex % words.length];
+        const safeWordIndex = wordIndex % words.length;
+        const currentWord = words[safeWordIndex] ?? "";
+
+        // Sécurité si charIndex dépasse la longueur du nouveau mot
+        if (charIndex > currentWord.length) {
+            setCharIndex(currentWord.length);
+            setDisplayedText(currentWord);
+            return;
+        }
 
         // Word fully typed: pause, then start deleting
         if (!isDeleting && charIndex === currentWord.length) {
@@ -42,14 +60,15 @@ export const useTypewriter = ({
 
         const timeout = setTimeout(
             () => {
-                setCharIndex((prev) => prev + (isDeleting ? -1 : 1));
-                setDisplayedText(currentWord.slice(0, charIndex + (isDeleting ? -1 : 1)));
+                const nextCharIndex = charIndex + (isDeleting ? -1 : 1);
+                setCharIndex(nextCharIndex);
+                setDisplayedText(currentWord.slice(0, nextCharIndex));
             },
             isDeleting ? deletingSpeed : typingSpeed
         );
 
         return () => clearTimeout(timeout);
-    }, [charIndex, isDeleting, wordIndex, words, typingSpeed, deletingSpeed, pauseTime]);
+    }, [charIndex, isDeleting, wordIndex, words, wordsKey, typingSpeed, deletingSpeed, pauseTime]);
 
     return displayedText;
 };

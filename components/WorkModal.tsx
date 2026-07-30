@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { RxCross2 } from "react-icons/rx";
 
 import ProjectLogo from "./ProjectLogo";
@@ -46,6 +47,61 @@ const itemVariants = {
 };
 
 const WorkModal = ({ project, onClose }: WorkModalProps) => {
+    const modalRef = useRef<HTMLDivElement>(null);
+    const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+    useEffect(() => {
+        if (!project) return;
+
+        // 1. Blocage du défilement d'arrière-plan
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        // 2. Focus initial sur le bouton de fermeture
+        const timer = setTimeout(() => {
+            closeButtonRef.current?.focus();
+        }, 50);
+
+        // 3. Gestion de la touche Échap et Piège de Focus (Tab / Shift+Tab)
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                onClose();
+                return;
+            }
+
+            if (e.key === "Tab" && modalRef.current) {
+                const focusables = modalRef.current.querySelectorAll<HTMLElement>(
+                    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                );
+
+                if (focusables.length === 0) return;
+
+                const firstElement = focusables[0];
+                const lastElement = focusables[focusables.length - 1];
+
+                if (e.shiftKey) {
+                    if (document.activeElement === firstElement) {
+                        e.preventDefault();
+                        lastElement.focus();
+                    }
+                } else {
+                    if (document.activeElement === lastElement) {
+                        e.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.body.style.overflow = originalOverflow;
+            clearTimeout(timer);
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [project, onClose]);
+
     return (
         <AnimatePresence>
             {project && (
@@ -63,6 +119,7 @@ const WorkModal = ({ project, onClose }: WorkModalProps) => {
                     />
 
                     <motion.div
+                        ref={modalRef}
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="work-modal-title"
@@ -82,6 +139,7 @@ const WorkModal = ({ project, onClose }: WorkModalProps) => {
                         />
 
                         <button
+                            ref={closeButtonRef}
                             type="button"
                             onClick={onClose}
                             className="absolute top-5 right-5 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white transition-colors duration-300 hover:bg-accent hover:text-primary"

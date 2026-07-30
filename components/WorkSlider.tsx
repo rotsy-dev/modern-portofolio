@@ -1,18 +1,20 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
-import { RxArrowTopRight, RxChevronLeft, RxChevronRight } from "react-icons/rx";
+import { useMemo, useState } from "react";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 import "swiper/css/pagination";
 
 import { projectsMeta } from "../data/projects";
 import { useLanguage } from "../context/LanguageContext";
+import { useSwiperControl } from "../hooks/useSwiperControl";
+import { chunk } from "../utils/array";
 import ProjectLogo from "./ProjectLogo";
+import SliderActionArrow from "./SliderActionArrow";
+import SliderNavButtons from "./SliderNavButtons";
 import WorkModal from "./WorkModal";
 import type { ProjectMeta } from "../data/projects";
 import type { ProjectTranslation } from "../types/translations";
@@ -27,18 +29,10 @@ interface WorkSliderProps {
 
 const CHUNK_SIZE = 4;
 
-const chunk = <T,>(arr: T[], size: number): T[][] => {
-  const result: T[][] = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
-};
-
 const WorkSlider = ({ category, allLabel }: WorkSliderProps) => {
   const { t } = useLanguage();
   const [selectedProject, setSelectedProject] = useState<WorkProject | null>(null);
-  const swiperRef = useRef<SwiperType | null>(null);
+  const { setSwiper, slidePrev, slideNext } = useSwiperControl();
 
   const projects: WorkProject[] = useMemo(
     () =>
@@ -63,26 +57,7 @@ const WorkSlider = ({ category, allLabel }: WorkSliderProps) => {
         <span>
           {filtered.length} {filtered.length > 1 ? "projects" : "project"}
         </span>
-        {slides.length > 1 && (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              aria-label="Previous"
-              onClick={() => swiperRef.current?.slidePrev()}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/50 transition-all duration-300 hover:border-accent/60 hover:text-accent"
-            >
-              <RxChevronLeft className="text-base" />
-            </button>
-            <button
-              type="button"
-              aria-label="Next"
-              onClick={() => swiperRef.current?.slideNext()}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/50 transition-all duration-300 hover:border-accent/60 hover:text-accent"
-            >
-              <RxChevronRight className="text-base" />
-            </button>
-          </div>
-        )}
+        {slides.length > 1 && <SliderNavButtons onPrev={slidePrev} onNext={slideNext} />}
       </div>
 
       <AnimatePresence mode="wait">
@@ -99,7 +74,7 @@ const WorkSlider = ({ category, allLabel }: WorkSliderProps) => {
             </div>
           ) : (
             <Swiper
-              onSwiper={(swiper) => (swiperRef.current = swiper)}
+              onSwiper={setSwiper}
               spaceBetween={16}
               pagination={{ clickable: true }}
               modules={[Pagination]}
@@ -136,10 +111,7 @@ const WorkSlider = ({ category, allLabel }: WorkSliderProps) => {
                               <p className="mt-0.5 text-xs text-white/40">{project.company}</p>
                             </div>
                           </div>
-                          <RxArrowTopRight
-                            className="mt-1 shrink-0 text-lg text-white/25 transition-all duration-300 group-hover:rotate-45 group-hover:text-accent"
-                            aria-hidden
-                          />
+                          <SliderActionArrow className="mt-1 shrink-0 text-lg text-white/25" />
                         </div>
 
                         <p className="relative text-[13px] leading-relaxed text-white/60 line-clamp-3">
@@ -167,36 +139,6 @@ const WorkSlider = ({ category, allLabel }: WorkSliderProps) => {
       </AnimatePresence>
 
       <WorkModal project={selectedProject} onClose={() => setSelectedProject(null)} />
-
-      <style jsx global>{`
-        .work-swiper .swiper-pagination {
-          bottom: 0 !important;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 6px;
-        }
-
-        .work-swiper .swiper-pagination-bullet {
-          width: 6px;
-          height: 6px;
-          margin: 0 !important;
-          border-radius: 9999px;
-          background-color: rgba(255, 255, 255, 0.25);
-          opacity: 1;
-          transition: all 0.25s ease;
-        }
-
-        .work-swiper .swiper-pagination-bullet:hover {
-          background-color: rgba(255, 255, 255, 0.45);
-        }
-
-        .work-swiper .swiper-pagination-bullet-active {
-          width: 22px;
-          border-radius: 9999px;
-          background-color: var(--color-accent, #ef4444);
-        }
-      `}</style>
     </>
   );
 };

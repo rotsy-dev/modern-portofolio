@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 
 import ParticlesContainer from "../components/ParticlesContainer";
 import ProjectsBtn from "../components/ProjectsBtn";
+import DownloadCvBtn from "../components/DownloadCvBtn";
 import Avatar from "../components/Avatar";
 
 import { useLanguage } from "../context/LanguageContext";
@@ -13,9 +14,9 @@ const Home = () => {
   const typedAccent = useTypewriter({ words: t.home.headingAccent });
 
   return (
-    <div className="bg-primary/60 h-full">
-      <div className="w-full h-full bg-gradient-to-r from-primary/10 via-black/30 to-black/10">
-        <div className="text-center flex flex-col justify-center xl:pt-40 xl:text-left h-full container mx-auto">
+    <div className="bg-primary/60 min-h-full relative flex flex-col justify-center">
+      <div className="w-full min-h-full bg-gradient-to-r from-primary/10 via-black/30 to-black/10 flex flex-col justify-center">
+        <div className="text-center flex flex-col justify-center pt-44 pb-12 xl:pt-40 xl:pb-0 xl:text-left container mx-auto relative z-10">
           <motion.h1
             variants={fadeIn("down", 0.2)}
             initial="hidden"
@@ -40,15 +41,9 @@ const Home = () => {
             {t.home.paragraph}
           </motion.p>
 
-          <div className="flex justify-center gap-x-4 xl:hidden relative">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 xl:hidden relative">
             <ProjectsBtn />
-            <a
-              href="/cv.pdf"
-              download="Rotsy-Raharinosy-CV.pdf"
-              className="flex items-center gap-x-2 px-6 py-3 border border-accent text-accent rounded-full hover:bg-accent hover:text-primary transition-all duration-300"
-            >
-              {t.home.downloadCV ?? "Télécharger CV"}
-            </a>
+            <DownloadCvBtn />
           </div>
 
           <motion.div
@@ -59,25 +54,21 @@ const Home = () => {
             className="hidden xl:flex items-center gap-x-4"
           >
             <ProjectsBtn />
-            <a
-              href="/cv.pdf"
-              download="Rotsy-Raharinosy-CV.pdf"
-              className="flex items-center gap-x-2 px-6 py-3 border border-accent text-accent rounded-full hover:bg-accent hover:text-primary transition-all duration-300"
-            >
-              {t.home.downloadCV ?? "Télécharger CV"}
-            </a>
+            <DownloadCvBtn />
           </motion.div>
         </div>
       </div>
 
-      <div className="w-[1280px] h-full absolute right-0 bottom-0">
+      <div className="w-full xl:w-[1280px] h-full absolute right-0 bottom-0 pointer-events-none">
         <div
           role="img"
           className="bg-none xl:bg-explosion xl:bg-cover xl:bg-right xl:bg-no-repeat w-full h-full absolute mix-blend-color-dodge translate-z-0"
           aria-hidden
         />
 
-        <ParticlesContainer />
+        <div className="pointer-events-auto w-full h-full">
+          <ParticlesContainer />
+        </div>
 
         <motion.div
           variants={fadeIn("up", 0.5)}
