@@ -8,6 +8,8 @@ const TopLeftImg = () => {
         alt="left cover bg"
         width={400}
         height={400}
+        sizes="(min-width: 1200px) 400px, 200px"
+        className="w-full h-auto"
       />
     </div>
   );
