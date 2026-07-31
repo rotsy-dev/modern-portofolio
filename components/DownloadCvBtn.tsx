@@ -1,4 +1,3 @@
-"use client";
 
 import { motion } from "framer-motion";
 import { HiArrowDownTray } from "react-icons/hi2";

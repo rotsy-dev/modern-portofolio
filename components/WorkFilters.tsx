@@ -1,4 +1,3 @@
-"use client";
 
 import { motion } from "framer-motion";
 
@@ -18,12 +17,15 @@ const WorkFilters = ({ categories, active, onChange }: WorkFiltersProps) => {
             {categories.map((category) => {
                 const isActive = category === active;
                 return (
-                    <button
+                    <motion.button
                         key={category}
                         type="button"
                         role="tab"
                         aria-selected={isActive}
                         onClick={() => onChange(category)}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 22 }}
                         className={`relative pb-2 transition-colors duration-300 focus-visible:outline-none ${isActive ? "text-white" : "text-white/40 hover:text-white/70"
                             }`}
                     >
@@ -35,7 +37,7 @@ const WorkFilters = ({ categories, active, onChange }: WorkFiltersProps) => {
                                 transition={{ type: "spring", stiffness: 400, damping: 32 }}
                             />
                         )}
-                    </button>
+                    </motion.button>
                 );
             })}
         </div>

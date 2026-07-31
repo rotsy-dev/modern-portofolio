@@ -1,12 +1,11 @@
-"use client";
-
 import { motion } from "framer-motion";
-import { BsArrowRight } from "react-icons/bs";
 import { useState, type FormEvent } from "react";
+import { BsArrowRight } from "react-icons/bs";
 
 import ContactInfo from "../../components/ContactInfo";
 import { useLanguage } from "../../context/LanguageContext";
 import { fadeIn } from "../../variants";
+import { SPRING } from "../../lib/motion";
 
 const Contact = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -74,6 +73,10 @@ const Contact = () => {
     }
   };
 
+  /** Classes de base partagées pour les inputs/textarea */
+  const fieldBase =
+    "bg-white/5 outline-none border border-white/10 placeholder:text-white/30 placeholder:font-light transition-all duration-300 focus:bg-white/[0.07] focus:border-accent/60 focus:ring-1 focus:ring-accent/60";
+
   return (
     <div className="h-full bg-primary/30">
       <div className="container mx-auto py-32 text-center xl:text-left flex items-center justify-center h-full">
@@ -90,7 +93,7 @@ const Contact = () => {
 
           <div className="flex flex-col lg:flex-row gap-10 lg:gap-12">
             <motion.form
-              variants={fadeIn("up", 0.4)}
+              variants={fadeIn("up", 0.3)}
               initial="hidden"
               animate="show"
               exit="hidden"
@@ -102,57 +105,70 @@ const Contact = () => {
               <input type="checkbox" name="botcheck" className="hidden" style={{ display: "none" }} />
 
               <div className="flex flex-col sm:flex-row gap-6 w-full">
-                <input
+                {/* Input Nom */}
+                <motion.input
                   type="text"
                   name="name"
                   placeholder={t.contact.namePlaceholder}
-                  className="input"
+                  className={`${fieldBase} w-full h-[52px] rounded-lg px-6`}
                   disabled={isLoading}
-                  aria-disabled={isLoading}
                   required
+                  whileFocus={{ scale: 1.015, boxShadow: "0 0 0 2px rgba(241,48,36,0.25)" }}
+                  transition={SPRING}
                 />
-                <input
+                {/* Input Email */}
+                <motion.input
                   type="email"
                   name="email"
                   placeholder={t.contact.emailPlaceholder}
-                  className="input"
+                  className={`${fieldBase} w-full h-[52px] rounded-lg px-6`}
                   disabled={isLoading}
-                  aria-disabled={isLoading}
                   required
+                  whileFocus={{ scale: 1.015, boxShadow: "0 0 0 2px rgba(241,48,36,0.25)" }}
+                  transition={SPRING}
                 />
               </div>
-              <input
+
+              {/* Input Sujet */}
+              <motion.input
                 type="text"
                 name="subject"
                 placeholder={t.contact.subjectPlaceholder}
-                className="input"
+                className={`${fieldBase} w-full h-[52px] rounded-lg px-6`}
                 disabled={isLoading}
-                aria-disabled={isLoading}
                 required
+                whileFocus={{ scale: 1.015, boxShadow: "0 0 0 2px rgba(241,48,36,0.25)" }}
+                transition={SPRING}
               />
-              <textarea
+
+              {/* Textarea Message */}
+              <motion.textarea
                 name="message"
                 placeholder={t.contact.messagePlaceholder}
-                className="textarea"
+                className={`${fieldBase} w-full h-[180px] p-6 rounded-lg resize-none`}
                 disabled={isLoading}
-                aria-disabled={isLoading}
                 required
+                whileFocus={{ scale: 1.01, boxShadow: "0 0 0 2px rgba(241,48,36,0.25)" }}
+                transition={SPRING}
               />
-              <button
+
+              {/* Bouton submit */}
+              <motion.button
                 type="submit"
                 className="btn rounded-full border border-white/50 max-w-[170px] px-8 transition-all duration-300 flex items-center justify-center overflow-hidden hover:border-accent group"
                 disabled={isLoading}
-                aria-disabled={isLoading}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                transition={SPRING}
               >
                 <span className="group-hover:-translate-y-[120%] group-hover:opacity-0 transition-all duration-500">
                   {isLoading ? "..." : t.contact.submitBtn}
                 </span>
-
                 <BsArrowRight
                   className="-translate-y-[120%] opacity-0 group-hover:flex group-hover:-translate-y-0 group-hover:opacity-100 transition-all duration-300 absolute text-[22px]"
                   aria-hidden
                 />
-              </button>
+              </motion.button>
 
               {status === "success" && (
                 <p className="text-sm text-green-400" role="status">

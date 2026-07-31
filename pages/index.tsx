@@ -41,11 +41,13 @@ const Home = () => {
             {t.home.paragraph}
           </motion.p>
 
+          {/* Boutons mobiles */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 xl:hidden relative">
             <ProjectsBtn />
             <DownloadCvBtn />
           </div>
 
+          {/* Boutons desktop */}
           <motion.div
             variants={fadeIn("down", 0.4)}
             initial="hidden"
@@ -60,6 +62,7 @@ const Home = () => {
       </div>
 
       <div className="w-full xl:w-[1280px] h-full absolute right-0 bottom-0 pointer-events-none">
+        {/* Fond explosion */}
         <div
           role="img"
           className="bg-none xl:bg-explosion xl:bg-cover xl:bg-right xl:bg-no-repeat w-full h-full absolute mix-blend-color-dodge translate-z-0"
@@ -70,12 +73,15 @@ const Home = () => {
           <ParticlesContainer />
         </div>
 
+        {/* Avatar — whileInView pour mobile où il peut être hors écran */}
         <motion.div
           variants={fadeIn("up", 0.5)}
           initial="hidden"
           animate="show"
           exit="hidden"
-          transition={{ duration: 1, ease: "easeInOut" }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
           className="w-full h-full max-w-[737px] max-h-[678px] absolute -bottom-32 lg:bottom-0 lg:right-[8%]"
         >
           <Avatar />

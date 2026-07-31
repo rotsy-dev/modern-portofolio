@@ -63,6 +63,8 @@ const About = () => {
         initial="hidden"
         animate="show"
         exit="hidden"
+        whileHover={{ scale: 1.02 }}
+        transition={{ type: "spring", stiffness: 200, damping: 28 }}
         className="hidden xl:flex absolute bottom-0 -left-[370px]"
       >
         <Avatar />
@@ -91,11 +93,12 @@ const About = () => {
             {about.bio}
           </motion.p>
 
-          {/* Grille de compteurs : 2x2 sur mobile, flex aligné sur tablette/desktop */}
+          {/* Grille de compteurs : déclenchés au scroll (whileInView) */}
           <motion.div
-            variants={fadeIn("right", 0.6)}
-            initial="hidden"
-            animate="show"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             className="w-full max-w-md md:max-w-xl xl:max-w-none mx-auto xl:mx-0 mb-6 xl:mb-0"
           >
             <div className="grid grid-cols-2 gap-3 sm:gap-4 md:flex md:flex-1 xl:gap-x-6">
@@ -112,7 +115,9 @@ const About = () => {
                     <CountUp
                       start={0}
                       end={counter.dynamic ? yearsOfExperience : counter.end}
-                      duration={5}
+                      duration={3.5}
+                      enableScrollSpy
+                      scrollSpyOnce
                     />
                     <span className="text-accent">+</span>
                   </div>

@@ -27,10 +27,10 @@ module.exports = {
         foreground: "rgb(var(--color-foreground) / <alpha-value>)",
       },
       backgroundImage: {
-        explosion: 'url("/bg-explosion.png")',
-        circles: 'url("/bg-circles.png")',
+        explosion: 'url("/bg-explosion.webp")',
+        circles: 'url("/circles.png")',
         circleStar: 'url("/circle-star.svg")',
-        site: 'url("/oo.jpg")',
+        site: 'url("/oo.webp")',
       },
       animation: {
         "spin-slow": "spin 6s linear infinite",

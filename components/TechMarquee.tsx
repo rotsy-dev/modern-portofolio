@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import {
     FaReact,
     FaAngular,
@@ -47,7 +48,13 @@ const TechMarquee = () => {
     const items = [...techs, ...techs];
 
     return (
-        <div className="relative w-full overflow-hidden mt-10 xl:mt-14 py-4 border-y border-white/10">
+        <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+            className="relative w-full overflow-hidden mt-10 xl:mt-14 py-4 border-y border-white/10"
+        >
             {/* fondus latéraux pour masquer les bords de la boucle */}
             <div className="absolute inset-y-0 left-0 w-14 bg-gradient-to-r from-primary/80 to-transparent z-10 pointer-events-none" />
             <div className="absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-primary/80 to-transparent z-10 pointer-events-none" />
@@ -76,7 +83,7 @@ const TechMarquee = () => {
           animation-play-state: paused;
         }
       `}</style>
-        </div>
+        </motion.div>
     );
 };
 
